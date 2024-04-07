@@ -7,6 +7,7 @@ import copy
 import datetime
 import logging
 import time
+import dataclasses
 
 from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,
@@ -77,8 +78,8 @@ class MobileAlertesGatewayBinarySensor(BinarySensorEntity):
         super().__init__()
         self._gateway = gateway
         description = dataclasses.replace(
-        description,
-        translation_key = description.key
+            description,
+            translation_key = description.key
         )
         self.entity_description = description
         self._attr_has_entity_name = True
@@ -110,13 +111,19 @@ class MobileAlertesBinarySensor(MobileAlertesEntity, BinarySensorEntity):
         super().__init__(coordinator, sensor, measurement)
         if description is None and measurement is not None:
             description = copy.deepcopy(descriptions[measurement.type])
-            description.name = measurement.name
-            description.key = (
-                measurement.name.lower().replace(" ", "_").replace("/", "_")
+            description = dataclasses.replace(
+                description,
+                name = measurement.name,
+                key = (
+                    measurement.name.lower().replace(" ", "_").replace("/", "_")
+                )
             )
 
         if description is not None and description.translation_key is None:
-            description.translation_key = description.key
+            description = dataclasses.replace(
+                description,
+                translation_key = description.key
+            )
 
         _LOGGER.debug("translation_key %s", description.translation_key)
 
