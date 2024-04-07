@@ -101,7 +101,7 @@ class MobileAlertesBaseCoordinator(DataUpdateCoordinator):
         return self._proxy
 
 
-@dataclasses.dataclass
+@dataclasses.dataclass(frozen=True)
 class MobileAlertesExtraStoredData(ExtraStoredData):
     """Object to hold extra stored data."""
 
